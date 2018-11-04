@@ -29,6 +29,8 @@ PreprocessScript(ByRef ScriptText, AhkScript, ExtraFiles, FileList="", FirstScri
 			{
 				if StrStartsWith(tline, Options.comm)
 					continue
+				else if StrStartsWith(tline, "/*") and StrEndsWith(tline, "*/")
+					continue
 				else if tline =
 					continue
 				else if StrStartsWith(tline, "/*")
@@ -127,7 +129,7 @@ PreprocessScript(ByRef ScriptText, AhkScript, ExtraFiles, FileList="", FirstScri
 				Util_Error("Error: #Delimiter is not supported.")
 			else
 				ScriptText .= (contSection ? A_LoopReadLine : tline) "`n"
-		}else if StrStartsWith(tline, "*/")
+		}else if (StrStartsWith(tline, "*/") or StrEndsWith(tline, "*/"))
 			cmtBlock := false
 	}
 	
@@ -196,6 +198,11 @@ FindLibraryFile(name, ScriptDir)
 StrStartsWith(ByRef v, ByRef w)
 {
 	return SubStr(v, 1, StrLen(w)) = w
+}
+
+StrEndsWith(ByRef v, ByRef w)
+{
+	return SubStr(v, -StrLen(w) + 1) = w
 }
 
 RegExEscape(t)
